@@ -54,6 +54,27 @@ export const TRANSLATIONS = {
   }
 };
 
+// --- ICONS & LOGO ---
+
+export const AppLogo = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <circle cx="100" cy="100" r="90" fill="url(#paint0_linear_logo)" />
+    <path d="M100 45C88.9543 45 80 53.9543 80 65V105C80 116.046 88.9543 125 100 125C111.046 125 120 116.046 120 105V65C120 53.9543 111.046 45 100 45Z" fill="white"/>
+    <path d="M60 105C60 127.091 77.9086 145 100 145C122.091 145 140 127.091 140 105H130C130 121.569 116.569 135 100 135C83.4315 135 70 121.569 70 105H60Z" fill="white" opacity="0.9"/>
+    <path d="M100 145V165" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+    <path d="M80 165H120" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+    <circle cx="145" cy="60" r="12" fill="#FCD34D"/>
+    <circle cx="55" cy="130" r="8" fill="#FCD34D"/>
+    <path d="M135 75L155 50" stroke="#FCD34D" strokeWidth="5" strokeLinecap="round"/>
+    <defs>
+      <linearGradient id="paint0_linear_logo" x1="26" y1="26" x2="174" y2="174" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#A855F7"/>
+        <stop offset="1" stopColor="#7E22CE"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
 export const HomeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />

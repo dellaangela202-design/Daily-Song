@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MusicNoteIcon } from '../../constants';
+import { AppLogo } from '../../constants';
 
 const SplashScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -26,9 +26,9 @@ const SplashScreen: React.FC = () => {
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 100, damping: 10, delay: 0.2 }}
-            className="p-8 bg-white/20 rounded-full mb-6"
+            className="mb-6"
         >
-            <MusicNoteIcon className="w-20 h-20 text-white" />
+            <AppLogo className="w-32 h-32" />
         </motion.div>
       <motion.h1 
         initial={{ y: 20, opacity: 0 }}

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../App';
+import { AppLogo } from '../../constants';
 
 const SocialIcon: React.FC<{ children: React.ReactNode; onClick: () => void; }> = ({ children, onClick }) => (
     <div onClick={onClick} className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md cursor-pointer hover:bg-gray-100 transition-colors">
@@ -39,12 +40,13 @@ const LoginScreen: React.FC = () => {
         className="flex flex-col h-screen bg-gradient-to-b from-purple-400 to-purple-600 p-8 text-white"
     >
       <div className="flex-grow flex flex-col justify-center">
-        <div className="text-left mb-10">
+        <div className="text-left mb-8">
+            <AppLogo className="w-16 h-16 mb-4" />
             <h1 className="text-4xl font-bold">Hello!</h1>
-            <p className="text-lg text-purple-200">Welcome to</p>
+            <p className="text-lg text-purple-200">Welcome to Daily Song Challenge</p>
         </div>
         
-        <h2 className="text-5xl font-bold mb-10">Login</h2>
+        <h2 className="text-3xl font-bold mb-6">Login</h2>
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
