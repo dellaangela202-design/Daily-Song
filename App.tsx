@@ -58,7 +58,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         karaokeStreak: 0,
         followers: 0,
         following: 0,
-        globalRank: 9999
+        globalRank: 0 // Unranked
     } as User; 
     
     console.log(`Logging in with ${email} as ${newUser.name}`);
@@ -75,7 +75,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         if (!prev) return null;
         const newScore = prev.totalScore + points;
         const newStreak = prev.karaokeStreak + 1; 
-        const newRank = Math.max(1, 9999 - Math.floor(newScore / 100)); 
+        
+        // Calculate rank only if score > 0. Simple mock logic: higher score = lower rank number
+        const newRank = newScore > 0 ? Math.max(1, 5000 - Math.floor(newScore / 10)) : 0;
 
         return {
             ...prev,

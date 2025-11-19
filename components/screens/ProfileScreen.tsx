@@ -133,7 +133,7 @@ const ProfileScreen: React.FC = () => {
             <div className="px-6 mt-6">
                 <div className="grid grid-cols-3 gap-4">
                     <StatCard label="Streak" value={user.karaokeStreak} />
-                    <StatCard label="Rank" value={`#${user.globalRank}`} />
+                    <StatCard label="Rank" value={user.globalRank > 0 ? `#${user.globalRank}` : '-'} />
                     <StatCard label={t.score} value={user.totalScore} />
                 </div>
             </div>

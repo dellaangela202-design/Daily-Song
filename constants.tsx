@@ -91,7 +91,7 @@ export const UsersIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 
-// User baru dimulai dengan data kosong
+// User baru dimulai dengan data kosong dan tanpa ranking
 export const MOCK_USER: User = {
   id: 'user-new-001',
   name: 'Pengguna Baru',
@@ -100,7 +100,7 @@ export const MOCK_USER: User = {
   followers: 0,
   following: 0,
   karaokeStreak: 0,
-  globalRank: 9999, // Rank awal yang jauh
+  globalRank: 0, // 0 menunjukkan belum memiliki peringkat (Unranked)
   totalScore: 0,
 };
 

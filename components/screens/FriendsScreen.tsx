@@ -81,7 +81,7 @@ const FriendProfileModal: React.FC<{ user: User; onClose: () => void }> = ({ use
                 
                 <div className="grid grid-cols-2 gap-4 text-center my-6">
                     <div className="bg-white p-3 rounded-lg shadow-sm"><p className="text-sm text-gray-500">Karaoke Streak</p><p className="font-bold text-purple-600 text-lg">{user.karaokeStreak}</p></div>
-                    <div className="bg-white p-3 rounded-lg shadow-sm"><p className="text-sm text-gray-500">Global Rank</p><p className="font-bold text-purple-600 text-lg">#{user.globalRank}</p></div>
+                    <div className="bg-white p-3 rounded-lg shadow-sm"><p className="text-sm text-gray-500">Global Rank</p><p className="font-bold text-purple-600 text-lg">{user.globalRank > 0 ? `#${user.globalRank}` : '-'}</p></div>
                     <div className="bg-white p-3 rounded-lg shadow-sm col-span-2"><p className="text-sm text-gray-500">Total Skor</p><p className="font-bold text-purple-600 text-lg">{user.totalScore}</p></div>
                 </div>
 
