@@ -29,11 +29,14 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const recordedChunksRef = useRef<Blob[]>([]);
     const lyricsContainerRef = useRef<HTMLDivElement | null>(null);
+    const { addScore } = useAuth();
     
     const [status, setStatus] = useState<'idle' | 'singing' | 'finished'>('idle');
     const [currentLineIndex, setCurrentLineIndex] = useState(-1);
     const [progress, setProgress] = useState(0);
     const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
+    const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+    const [scoreEarned, setScoreEarned] = useState(0);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -83,6 +86,7 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
         if (recordedAudioUrl) {
             URL.revokeObjectURL(recordedAudioUrl);
             setRecordedAudioUrl(null);
+            setRecordedBlob(null);
         }
         if (mediaRecorderRef.current && mediaRecorderRef.current.stream) {
             mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
@@ -119,10 +123,10 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
             mediaRecorderRef.current.stop();
             
             mediaRecorderRef.current.onstop = () => {
-                 const recordedBlob = new Blob(recordedChunksRef.current, { type: 'audio/webm' });
-                 const url = URL.createObjectURL(recordedBlob);
+                 const blob = new Blob(recordedChunksRef.current, { type: 'audio/webm' });
+                 const url = URL.createObjectURL(blob);
                  setRecordedAudioUrl(url);
-                 console.log("Rekaman tersedia di:", url);
+                 setRecordedBlob(blob);
             };
         }
         
@@ -138,9 +142,30 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
             setCurrentLineIndex(-1);
             setProgress(0);
         } else {
+            // Generate random score for demo purposes between 60 and 100
+            const randomScore = Math.floor(Math.random() * 40) + 60; 
+            setScoreEarned(randomScore);
             setStatus('finished');
         }
     };
+
+    const handleFinish = () => {
+        // Add the earned score to the user's profile
+        addScore(scoreEarned);
+        alert(`Tantangan Selesai! Skor kamu +${scoreEarned} poin!`);
+        onBack();
+    }
+    
+    const handleDownload = () => {
+        if (recordedAudioUrl && recordedBlob) {
+            const a = document.createElement('a');
+            a.href = recordedAudioUrl;
+            a.download = `karaoke-${song.title.replace(/\s+/g, '-')}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
 
     const handleBack = () => {
         if (status === 'singing') {
@@ -158,6 +183,7 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
             transition={{ type: 'spring', stiffness: 120, damping: 20 }}
             className="absolute inset-0 bg-purple-900 text-white flex flex-col p-4 z-20"
         >
+            {/* Hidden audio element for backing track */}
             <audio ref={audioRef} src={song.instrumentalUrl} preload="auto"></audio>
 
             <div className="flex items-center space-x-4 flex-shrink-0">
@@ -185,7 +211,7 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
                 <div className="bg-yellow-300 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
             </div>
 
-            <div className="text-center flex-shrink-0 h-24 flex flex-col justify-center items-center">
+            <div className="text-center flex-shrink-0 flex flex-col justify-center items-center bg-purple-800/50 rounded-xl p-4">
                 {status === 'idle' && (
                     <button onClick={startSinging} className="bg-yellow-300 text-purple-900 font-bold py-4 px-8 rounded-full shadow-lg transform hover:scale-105 transition">
                         Mulai Bernyanyi
@@ -198,11 +224,29 @@ const KaraokeView: React.FC<{ song: Song; onBack: () => void; }> = ({ song, onBa
                     </button>
                 )}
                  {status === 'finished' && (
-                    <div className="flex flex-col items-center space-y-3">
-                         {recordedAudioUrl && <audio src={recordedAudioUrl} controls className="w-full max-w-xs h-10" />}
-                        <button onClick={startSinging} className="bg-yellow-300 text-purple-900 font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition">
-                            Nyanyi Lagi
-                        </button>
+                    <div className="flex flex-col items-center space-y-3 w-full">
+                         <p className="text-yellow-300 font-bold text-lg">Skor: {scoreEarned}</p>
+                         
+                         {recordedAudioUrl && (
+                             <div className="w-full bg-purple-900/50 p-2 rounded-lg">
+                                <p className="text-xs text-gray-300 mb-1">Hasil Rekaman Kamu:</p>
+                                <audio src={recordedAudioUrl} controls className="w-full h-8" />
+                             </div>
+                         )}
+                         
+                        <div className="flex flex-wrap justify-center gap-2 w-full">
+                            <button onClick={startSinging} className="bg-white text-purple-900 font-bold py-2 px-4 rounded-full shadow hover:bg-gray-100 text-sm">
+                                Ulangi
+                            </button>
+                             {recordedAudioUrl && (
+                                <button onClick={handleDownload} className="bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow hover:bg-green-600 text-sm">
+                                    Unduh
+                                </button>
+                            )}
+                            <button onClick={handleFinish} className="bg-yellow-300 text-purple-900 font-bold py-2 px-6 rounded-full shadow-lg hover:bg-yellow-400 transition transform hover:scale-105 text-sm">
+                                Simpan & Selesai
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
@@ -254,7 +298,9 @@ const DailyChallengeFlow: React.FC = () => {
                 <motion.div key="songlist" initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} className="p-6 space-y-4">
                      <button onClick={() => setStep('genre')} className="text-purple-600 mb-2">&larr; Kembali ke Genre</button>
                     <h2 className="text-xl font-bold capitalize">{selectedGenre} Songs</h2>
-                    {songs.map(song => <SongCard key={song.id} song={song} onSelect={handleSongSelect} />)}
+                    <div className="space-y-2 pb-20">
+                        {songs.map(song => <SongCard key={song.id} song={song} onSelect={handleSongSelect} />)}
+                    </div>
                 </motion.div>
             );
         }
@@ -284,7 +330,7 @@ const DailyChallengeFlow: React.FC = () => {
     }
 
     return (
-        <div className="relative">
+        <div className="relative h-full">
             <AnimatePresence mode="wait">
                 {renderContent()}
             </AnimatePresence>
@@ -308,16 +354,17 @@ const SpecialChallengeFlow: React.FC = () => {
 
         switch (challengeId) {
             case 'sc1': // Duet Misterius
-                const metSc1 = friendsCount >= 1;
+                // Check dynamic user following count
+                const hasFriends = currentUser.following > 0; 
                 return {
-                    met: metSc1,
-                    requirement: metSc1 ? null : "Anda memerlukan setidaknya 1 teman untuk mencoba tantangan ini."
+                    met: hasFriends,
+                    requirement: hasFriends ? null : "Ikuti setidaknya 1 teman untuk membuka tantangan ini."
                 };
             case 'sc2': // Skala Nada Tinggi
                 const metSc2 = currentUser.totalScore >= 1000;
                 return {
                     met: metSc2,
-                    requirement: metSc2 ? null : "Skor total Anda harus minimal 1000 untuk membuka tantangan ini."
+                    requirement: metSc2 ? null : "Skor total harus minimal 1000 untuk membuka tantangan ini."
                 };
             case 'sc3': // Geotagging Lagu
                 const metSc3 = currentUser.karaokeStreak >= 5;
@@ -326,10 +373,10 @@ const SpecialChallengeFlow: React.FC = () => {
                     requirement: metSc3 ? null : "Capai 5 hari beruntun karaoke untuk membuka tantangan ini."
                 };
             case 'sc4': // Madley Estafet Misterius
-                const metSc4 = currentUser.globalRank <= 10;
+                const metSc4 = currentUser.globalRank <= 10 && currentUser.totalScore > 0;
                 return {
                     met: metSc4,
-                    requirement: metSc4 ? null : "Masuk ke peringkat 10 besar global untuk mencoba tantangan estafet ini."
+                    requirement: metSc4 ? null : "Masuk ke peringkat 10 besar global untuk mencoba tantangan ini."
                 };
             default:
                 return { met: true, requirement: null };
@@ -412,7 +459,7 @@ const SpecialChallengeFlow: React.FC = () => {
                                     }`}
                                     disabled={!criteriaResult.met}
                                 >
-                                    Mulai Tantangan
+                                    Mulai
                                 </button>
                             </div>
                         </motion.div>

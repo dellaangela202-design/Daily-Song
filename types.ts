@@ -1,5 +1,9 @@
+
 // Fix: Import React to make React.ReactNode available.
 import React from 'react';
+
+export type Theme = 'light' | 'dark';
+export type Language = 'id' | 'en';
 
 export interface User {
   id: string;
@@ -34,4 +38,12 @@ export interface SpecialChallenge {
   id: string;
   title: string;
   icon: React.ReactNode;
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  timestamp: number;
 }
